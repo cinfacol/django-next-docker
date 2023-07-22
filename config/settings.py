@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 import environ
 
@@ -20,6 +21,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "djoser",
+    "rest_framework_simplejwt",
     "apps.users.apps.UsersConfig",
 ]
 
@@ -65,6 +68,26 @@ DATABASES = {
     }
 }
 
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:80",
+    "http://localhost:80",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://localhost:8080",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:8080",
+    "http://127.0.0.1:3000",
+]
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -82,9 +105,56 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "users.User"
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
+SIMPLE_JWT = {
+    "AUTH_HEADER_TYPES": (
+        "Bearer",
+        "JWT",
+    ),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "SIGNING_KEY": env("SIGNING_KEY"),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+}
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
+    "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
+    "SEND_CONFIRMATION_EMAIL": True,
+    "PASSWORD_RESET_CONFIRM_URL": "password/reset/confirm/{uid}/{token}",
+    "SET_PASSWORD_RETYPE": True,
+    "PASSWORD_RESET_CONFIRM_RETYPE": True,
+    "USERNAME_RESET_CONFIRM_URL": "email/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "activate/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SERIALIZERS": {
+        "user_create": "apps.users.serializers.CreateUserSerializer,",
+        "user": "apps.users.serializers.UserSerializer",
+        "current_user": "apps.users.serializers.UserSerializer",
+        "user_delete": "djoser.serializers.UserDeleteSerializer",
+    },
+}
+
+# EMAIL_BACKEND = "djcelery_email.backends.CeleryEmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = "sandbox.smtp.mailtrap.io"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = "f57d26e5b276fa"
+EMAIL_HOST_PASSWORD = "001f797d10b2e8"
+DEFAULT_FROM_EMAIL = "info@last-shop.com"
+DOMAIN = env("DOMAIN")
+SITE_NAME = "Django-Next-Docker"
+
 
 LANGUAGE_CODE = "en-us"
 

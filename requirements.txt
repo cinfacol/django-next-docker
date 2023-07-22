@@ -1,10 +1,13 @@
 Django
 djangorestframework
+djangorestframework-simplejwt
 django-environ
 django-filter
 django-autoslug
 django-countries
+djoser
 Pillow
+PyJWT
 django-phonenumber-field
 phonenumbers
 psycopg2-binary
